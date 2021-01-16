@@ -9,6 +9,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     // final product = Provider.of<Product>(context);
     final cart = Provider.of<Cart>(context, listen: false);
+    final scaffold = Scaffold.of(context);
 
     return Consumer<Product>(
       builder: (ctx, product, child) => ClipRRect(
@@ -32,8 +33,18 @@ class ProductItem extends StatelessWidget {
               icon: Icon(
                 product.isFavorite ? Icons.favorite : Icons.favorite_border,
               ),
-              onPressed: () {
-                product.toggleFavoriteStatus();
+              onPressed: () async {
+                try {
+                  await product.toggleFavoriteStatus();
+                } catch (error) {
+                  scaffold.showSnackBar(
+                    SnackBar(
+                        content: Text(
+                      error.toString(),
+                      textAlign: TextAlign.center,
+                    )),
+                  );
+                }
               },
               color: Theme.of(context).accentColor,
             ),
